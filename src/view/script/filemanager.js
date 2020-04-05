@@ -5,6 +5,7 @@ const path = require('path')
 const foldersSection = document.getElementById('folder-section')
 const folderItem = document.getElementsByClassName('folder-item')
 const backBtn = document.getElementById('back-btn')
+const upBtn = document.getElementById('up-btn')
 
 // Data
 var currentDir = 'C:/'
@@ -105,5 +106,17 @@ backBtn.addEventListener('click', (e) => {
     currentDir = previousDir.pop()
     ipcRenderer.send('read-folder', currentDir)
     folderPathTxt.value = currentDir
+})
+
+upBtn.addEventListener('click', (e) => {
+    e.preventDefault()
+    if (currentDir.toLowerCase() === 'c:/') return;
+
+    // heading back to previous directory
+    currentDir = path.dirname(currentDir)
+    previousDir.push(currentDir)
+    ipcRenderer.send('read-folder', currentDir)
+    folderPathTxt.value = currentDir
+    console.log(`heading to: ${currentDir}`)
 })
 
