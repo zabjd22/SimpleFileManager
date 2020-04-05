@@ -42,19 +42,18 @@ ipcMain.on('async-message', (event, args) => {
 })
 
 ipcMain.on('read-folder', (event, args) => {
-  // TODO: Separate Files from Folders
   console.log(`args: ${args}`)
-  const foldersInDir = fs.readdirSync(defaultDir)
+  const currentDir = args ? args : defaultDir;
+  const foldersInDir = fs.readdirSync(currentDir)
 
   let folders = []
   let files = []
 
   for(const ele of foldersInDir) {
     try {
-      fs.readdirSync(path.join(defaultDir, ele))
+      fs.readdirSync(path.join(currentDir, ele))
       folders.push(ele)
     } catch (error) {
-      files.push(ele)
       if(error.code === 'ENOTDIR') {
         files.push(ele)
       }
@@ -63,6 +62,6 @@ ipcMain.on('read-folder', (event, args) => {
 
   event.reply('folder-details', JSON.stringify({
     'folders': folders,
-    'files': files 
+    'files': files
   }))
 })
